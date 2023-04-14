@@ -1,0 +1,66 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{algorithm,algpseudocode}
+\usepackage{bm}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage{mathtools}
+\usepackage{chngcntr}
+\usepackage{framed}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{biblatex}
+\usepackage{minted}
+\usepackage{physics}
+\usepackage{mathdots}
+\usepackage{yhmath}
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{tabularx}
+\usepackage{extarrows}
+\usepackage{booktabs}
+\usepackage{placeins}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes}
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+
+\counterwithin{figure}{section}
+
+\makeatletter
+\def\@seccntformat#1{
+  \expandafter\ifx\csname c@#1\endcsname\c@section\else
+  \csname the#1\endcsname\quad
+  \fi}
+\makeatother
+
+\renewcommand\qedsymbol{QED}
+\renewcommand{\familydefault}{\sfdefault}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+
+\begin{document}
+    \begin{minipage}[]{\textwidth}
+        \setstretch{1.25}
+        \centering{
+            \Huge Project Report \par
+            \Large \textcolor{darkgray}{Introduction to Algorithm Engineering} \par
+            \large \textcolor{darkgray}{Bharat Sahlot | Kyrylo Shyvam Kumar} \par
+        }
+        \setstretch{1.0}
+    \end{minipage}
+\end{document}
