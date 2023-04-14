@@ -7,7 +7,8 @@ template<typename NodeType, typename DistanceType>
 class AdjacencyList
 {
     public:
-        using Matrix = std::vector<std::vector<std::pair<NodeType, DistanceType>>>;
+        using Edges = std::vector<std::pair<NodeType, DistanceType>>;
+        using Matrix = std::vector<Edges>;
 
         AdjacencyList(std::size_t v) { mat.assign(v, std::vector<std::pair<NodeType, DistanceType>>()); sz = v; }
 
@@ -18,9 +19,14 @@ class AdjacencyList
         }
 
         const std::vector<std::pair<NodeType, DistanceType>>& GetAllEdges(NodeType v) { return mat[v]; }
-
         const Matrix& GetMatrix() const { return mat; }
         std::size_t GetSize() const { return sz; }
+
+        // Use some shortest path algorithm
+        DistanceType GetDistance(NodeType u, NodeType v)
+        {
+            return 0.f;
+        }
 
     private:
         std::size_t sz;
