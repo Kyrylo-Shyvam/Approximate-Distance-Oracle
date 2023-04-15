@@ -1,7 +1,10 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <limits>
 #include <vector>
+#include <queue>
+#include <unordered_set>
 
 template<typename NodeType, typename DistanceType>
 class AdjacencyList
@@ -23,9 +26,34 @@ class AdjacencyList
         std::size_t GetSize() const { return sz; }
 
         // Use some shortest path algorithm
-        DistanceType GetDistance(NodeType u, NodeType v)
+        std::pair<NodeType, DistanceType> GetNearest(NodeType u, std::vector<NodeType> v) const
         {
-            return 0.f;
+            std::unordered_set<NodeType> vs(v.begin(), v.end());
+
+            std::vector<DistanceType> dist(sz, std::numeric_limits<DistanceType>::max());
+            dist[u] = 0;
+
+            std::priority_queue<std::pair<DistanceType, NodeType>> q;
+            q.push({0, u});
+
+            while(!q.empty())
+            {
+                auto [d, a] = q.top();
+                q.pop();
+
+                if(dist[a] < d) continue;
+                if(vs.count(a)) return {a, d};
+
+                for(auto [b, d1]: mat[a])
+                {
+                    if(d1 + d < dist[b])
+                    {
+                        dist[b] = d1 + d;
+                        q.push({d1 + d, b});
+                    }
+                }
+            }
+            return {-1, 0.f};
         }
 
     private:
