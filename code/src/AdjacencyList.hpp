@@ -33,7 +33,7 @@ class AdjacencyList
             std::vector<DistanceType> dist(sz, std::numeric_limits<DistanceType>::max());
             dist[u] = 0;
 
-            std::priority_queue<std::pair<DistanceType, NodeType>> q;
+            std::priority_queue<std::pair<DistanceType, NodeType>, std::vector<std::pair<DistanceType, NodeType>>, std::greater<std::pair<DistanceType, NodeType>>> q;
             q.push({0, u});
 
             while(!q.empty())

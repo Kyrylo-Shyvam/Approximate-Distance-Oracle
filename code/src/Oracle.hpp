@@ -1,6 +1,8 @@
 #ifndef ORACLE_H
 #define ORACLE_H
 
+#include <functional>
+#include <iostream>
 #include <vector>
 #include <cmath>
 #include <random>
@@ -54,17 +56,40 @@ class Oracle
                 } while(A[i].size() == 0); // HACK: is this correct? we dont want to get an empty list before A[K] but can this end up in infinite loop
             }
 
+#ifdef PRINT_EXTRA
+            for(int i = 0; i <= K; i++)
+            {
+                std::cout << "A[" << i << "]:";
+                for(NodeType x: A[i])
+                {
+                    std::cout << " " << x;
+                }
+                std::cout << std::endl;
+            }
+#endif
+
             std::vector<std::unordered_map<NodeType, DistanceType>> C(graph.GetSize());
             for(int i = K - 1; i >= 0; i--)
             {
+#ifdef PRINT_EXTRA
+                std::cout << i << ":";
+#endif
+
                 for(NodeType x = 0; x < graph.GetSize(); x++)
                 {
                     // Find nearest to x in A[i]
                     auto [piv, div] = graph.GetNearest(x, A[i]);
                     if(div == P[i + 1][x].second) piv = P[i + 1][x].first;
 
+#ifdef PRINT_EXTRA
+                    std::cout << " {" << x << ": " << piv << ", " << div << "}";
+#endif
+
                     P[i][x] = {piv, div};
                 }
+#ifdef PRINT_EXTRA
+                std::cout << std::endl;
+#endif
 
                 for(NodeType x: A[i])
                 {
@@ -78,10 +103,19 @@ class Oracle
 
             for(NodeType w = 0; w < graph.GetSize(); w++)
             {
+#ifdef PRINT_EXTRA
+                std::cout << w << ":";
+#endif
                 for(auto [v, d]: C[w])
                 {
+#ifdef PRINT_EXTRA
+                    std::cout << " {" << v << ":" << d << "}";
+#endif
                     B[v][w] = d;
                 }
+#ifdef PRINT_EXTRA
+                std::cout << std::endl;
+#endif
             }
         }
 
@@ -90,7 +124,8 @@ class Oracle
             std::vector<DistanceType> dist(graph.GetSize(), std::numeric_limits<DistanceType>::max());
             dist[w] = 0;
 
-            std::priority_queue<std::pair<DistanceType, NodeType>> q;
+            std::priority_queue<std::pair<DistanceType, NodeType>, std::vector<std::pair<DistanceType, NodeType>>, std::greater<std::pair<DistanceType, NodeType>>> q;
+
             q.push({0, w});
 
             std::unordered_map<NodeType, DistanceType> res;
@@ -104,7 +139,7 @@ class Oracle
                 res[a] = d;
                 for(auto [b, d1]: graph.GetAllEdges(a))
                 {
-                    if(d1 + d < P[pi][b].second)
+                    if(d1 + d < dist[b] && d1 + d < P[pi + 1][b].second)
                     {
                         dist[b] = d1 + d;
                         q.push({d1 + d, b});
