@@ -5,6 +5,8 @@
 #include <cmath>
 #include <random>
 #include <unordered_set>
+#include <unordered_map>
+#include <assert.h>
 
 #include "AdjacencyList.hpp"
 
@@ -21,7 +23,7 @@ class Oracle
             // used for fast lookup for calculating A[i] - A[i + 1]
             AC.assign(K + 1, std::vector<bool>(graph.GetSize(), false));
 
-            B.assign(graph.GetSize(), std::unordered_set<NodeType>());
+            B.assign(graph.GetSize(), std::unordered_map<NodeType, DistanceType>());
 
             P.assign(K + 1, std::vector<std::pair<NodeType, DistanceType>>(graph.GetSize(), std::make_pair(-1, std::numeric_limits<DistanceType>::max())));
 
@@ -51,7 +53,7 @@ class Oracle
                 } while(A[i].size() == 0); // HACK: is this correct? we dont want to get an empty list before A[K] but can this end up in infinite loop
             }
 
-            std::vector<std::unordered_set<NodeType>> C(graph.GetSize());
+            std::vector<std::unordered_map<NodeType, DistanceType>> C(graph.GetSize());
             for(int i = K - 1; i >= 0; i--)
             {
                 for(NodeType x = 0; x < graph.GetSize(); x++)
@@ -75,14 +77,14 @@ class Oracle
 
             for(NodeType w = 0; w < graph.GetSize(); w++)
             {
-                for(NodeType v: C[w])
+                for(auto [v, d]: C[w])
                 {
-                    B[v].insert(w);
+                    B[v][w] = d;
                 }
             }
         }
 
-        std::unordered_set<NodeType> GenCluster(NodeType w, int pi)
+        std::unordered_map<NodeType, DistanceType> GenCluster(NodeType w, int pi)
         {
             std::vector<DistanceType> dist(graph.GetSize(), std::numeric_limits<DistanceType>::max());
             dist[w] = 0;
@@ -90,7 +92,7 @@ class Oracle
             std::priority_queue<std::pair<DistanceType, NodeType>> q;
             q.push({0, w});
 
-            std::unordered_set<NodeType> res;
+            std::unordered_map<NodeType, DistanceType> res;
             while(!q.empty())
             {
                 auto [d, a] = q.top();
@@ -98,7 +100,7 @@ class Oracle
 
                 if(dist[a] < d) continue;
 
-                res.insert(a);
+                res[a] = d;
                 for(auto [b, d1]: graph.GetAllEdges(a))
                 {
                     if(d1 + d < P[pi][b].second)
@@ -111,12 +113,30 @@ class Oracle
             return res;
         }
 
+        DistanceType Query(NodeType u, NodeType v)
+        {
+            int i = 0;
+            NodeType w = u;
+
+            while(B[v].count(w) == 0)
+            {
+                i++;
+                std::swap(u, v);
+                w = P[i][u].first;
+            }
+
+            // WARN: I am not sure this is how it should work
+            assert(B[u].count(w) > 0);
+            assert(B[v].count(w) > 0);
+            return B[u][w] + B[v][w];
+        }
+
     private:
         AdjList graph;
         std::vector<std::vector<NodeType>> A;
         std::vector<std::vector<bool>> AC;
         std::vector<std::vector<std::pair<NodeType, DistanceType>>> P;
-        std::vector<std::unordered_set<NodeType>> B;
+        std::vector<std::unordered_map<NodeType, DistanceType>> B;
 };
 
 #endif
