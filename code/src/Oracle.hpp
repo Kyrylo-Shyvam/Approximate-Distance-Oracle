@@ -16,6 +16,7 @@ class Oracle
     using AdjList = AdjacencyList<NodeType, DistanceType>;
 
     public:
+        // WARN: only works for connected graphs
         Oracle(AdjList lst) : graph(lst)
         {
             A.assign(K + 1, std::vector<NodeType>());

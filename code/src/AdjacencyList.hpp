@@ -56,6 +56,11 @@ class AdjacencyList
             return {-1, 0.f};
         }
 
+        DistanceType GetDistance(NodeType u, NodeType v) const
+        {
+            return GetNearest(u, {v}).second;
+        }
+
     private:
         std::size_t sz;
         Matrix mat;
