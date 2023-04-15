@@ -19,7 +19,7 @@ int main()
         std::cout << std::endl;
     }
 
-    Oracle<int, float, 2> oracle(lst1);
+    Oracle<int, float> oracle(lst1, 2);
 
     return 0;
 }

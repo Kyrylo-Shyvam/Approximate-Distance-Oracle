@@ -12,16 +12,17 @@ int main(int argc, char* argv[])
 {
     if(argc < 7)
     {
-        std::cout << "usage: K1Test <seed> <minimum-n> <maximum-n> <max-m> <min-dist> <max-dist>" << std::endl;
+        std::cout << "usage: RandomGraphTest K <seed> <minimum-n> <maximum-n> <max-m> <min-dist> <max-dist>" << std::endl;
         return -1;
     }
 
-    const int seed = atoi(argv[1]);
-    const int MN = atoi(argv[2]);
-    const int MX = atoi(argv[3]);
-    const int MM = atoi(argv[4]);
-    const float MND = strtof(argv[5], nullptr);
-    const float MXD = strtof(argv[6], nullptr);
+    const int K = atoi(argv[1]);
+    const int seed = atoi(argv[2]);
+    const int MN = atoi(argv[3]);
+    const int MX = atoi(argv[4]);
+    const int MM = atoi(argv[5]);
+    const float MND = strtof(argv[6], nullptr);
+    const float MXD = strtof(argv[7], nullptr);
 
     auto adjList = GenGraph(seed, MN, MX, MM, MND, MXD);
     const int N = adjList.GetSize();
@@ -35,12 +36,12 @@ int main(int argc, char* argv[])
         }
     }
 
-    Oracle<int, float, 1> oracle(adjList);
+    Oracle<int, float> oracle(adjList, K);
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < N; j++)
         {
-            assert(oracle.Query(i, j) == dmat[i][j]);
+            assert(oracle.Query(i, j) <= (2 * K - 1) * dmat[i][j]);
         }
     }
 

@@ -12,14 +12,14 @@
 
 #include "AdjacencyList.hpp"
 
-template<typename NodeType, typename DistanceType, int K>
+template<typename NodeType, typename DistanceType>
 class Oracle
 {
     using AdjList = AdjacencyList<NodeType, DistanceType>;
 
     public:
         // WARN: only works for connected graphs
-        Oracle(AdjList lst) : graph(lst)
+        Oracle(AdjList lst, int K) : graph(lst)
         {
             A.assign(K + 1, std::vector<NodeType>());
 
