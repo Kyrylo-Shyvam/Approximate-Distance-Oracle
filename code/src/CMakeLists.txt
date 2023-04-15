@@ -8,3 +8,7 @@ file(GLOB_RECURSE SOURCES "${SRC_DIR}/*.cpp")
 add_library(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE "${INC_DIR}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+
+if(PRINT_EXTRA)
+    add_definitions("-DPRINT_EXTRA")
+endif(PRINT_EXTRA)

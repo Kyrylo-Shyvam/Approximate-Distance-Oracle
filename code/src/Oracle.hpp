@@ -12,6 +12,8 @@
 
 #include "AdjacencyList.hpp"
 
+#define PRINT_EXTRA
+
 template<typename NodeType, typename DistanceType>
 class Oracle
 {
@@ -19,7 +21,7 @@ class Oracle
 
     public:
         // WARN: only works for connected graphs
-        Oracle(AdjList lst, int K) : graph(lst)
+        Oracle(AdjList lst, int K) : graph(lst), K(K)
         {
             A.assign(K + 1, std::vector<NodeType>());
 
@@ -75,10 +77,12 @@ class Oracle
                 std::cout << i << ":";
 #endif
 
+                std::vector<std::pair<NodeType, DistanceType>> T = SSSPTree(i);
+
                 for(NodeType x = 0; x < graph.GetSize(); x++)
                 {
                     // Find nearest to x in A[i]
-                    auto [piv, div] = graph.GetNearest(x, A[i]);
+                    auto [piv, div] = T[x];
                     if(div == P[i + 1][x].second) piv = P[i + 1][x].first;
 
 #ifdef PRINT_EXTRA
@@ -119,6 +123,43 @@ class Oracle
             }
         }
 
+        // HACK: Do we need to care about P_i(v) = P_{i + 1}(v) in case of multiple witnesses, shouldn't priority_queue maintain that?
+        std::vector<std::pair<NodeType, DistanceType>> SSSPTree(int i)
+        {
+            std::vector<DistanceType> dist(graph.GetSize(), std::numeric_limits<DistanceType>::max());
+
+            std::priority_queue<std::pair<DistanceType, NodeType>, std::vector<std::pair<DistanceType, NodeType>>, std::greater<std::pair<DistanceType, NodeType>>> q;
+
+            std::vector<std::pair<NodeType, DistanceType>> res(graph.GetSize(), {-1, std::numeric_limits<DistanceType>::max()});
+
+            for(NodeType x: A[i])
+            {
+                dist[x] = 0;
+                q.push({0, x});
+                res[x] = {x, 0};
+            }
+
+            while(!q.empty())
+            {
+                auto [d, a] = q.top();
+                q.pop();
+
+                if(dist[a] < d) continue;
+
+                for(auto [b, d1]: graph.GetAllEdges(a))
+                {
+                    if(d1 + d < dist[b])
+                    {
+                        dist[b] = d1 + d;
+                        q.push({d1 + d, b});
+
+                        res[b] = { res[a].first, d1 + d };
+                    }
+                }
+            }
+            return res;
+        }
+
         std::unordered_map<NodeType, DistanceType> GenCluster(NodeType w, int pi)
         {
             std::vector<DistanceType> dist(graph.GetSize(), std::numeric_limits<DistanceType>::max());
@@ -157,6 +198,7 @@ class Oracle
             while(B[v].count(w) == 0)
             {
                 i++;
+                assert(i <= K);
                 std::swap(u, v);
                 w = P[i][u].first;
             }
@@ -168,6 +210,7 @@ class Oracle
         }
 
     private:
+        int K;
         AdjList graph;
         std::vector<std::vector<NodeType>> A;
         std::vector<std::vector<bool>> AC;
