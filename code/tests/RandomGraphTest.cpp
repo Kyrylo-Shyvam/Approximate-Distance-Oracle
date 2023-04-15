@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
         }
     }
 
+    // std::cout << "Generated. Testing..." << std::endl;
     Oracle<int, float> oracle(adjList, K);
     for(int i = 0; i < N; i++)
     {

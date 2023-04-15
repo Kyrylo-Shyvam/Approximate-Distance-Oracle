@@ -12,8 +12,6 @@
 
 #include "AdjacencyList.hpp"
 
-#define PRINT_EXTRA
-
 template<typename NodeType, typename DistanceType>
 class Oracle
 {
