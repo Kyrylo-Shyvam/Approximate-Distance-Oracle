@@ -13,17 +13,19 @@ class AdjacencyList
         using Edges = std::vector<std::pair<NodeType, DistanceType>>;
         using Matrix = std::vector<Edges>;
 
-        AdjacencyList(std::size_t v) { mat.assign(v, std::vector<std::pair<NodeType, DistanceType>>()); sz = v; }
+        AdjacencyList(std::size_t v) : sz(v), edgeCount(0) { mat.assign(v, std::vector<std::pair<NodeType, DistanceType>>()); }
 
         void AddUndirectedEdge(NodeType u, NodeType v, DistanceType d)
         {
             mat[u].push_back(std::make_pair(v, d));
             mat[v].push_back(std::make_pair(u, d));
+            edgeCount++;
         }
 
         const std::vector<std::pair<NodeType, DistanceType>>& GetAllEdges(NodeType v) { return mat[v]; }
         const Matrix& GetMatrix() const { return mat; }
         std::size_t GetSize() const { return sz; }
+        std::size_t GetEdgeCount() const { return edgeCount; }
 
         // Use some shortest path algorithm
         std::pair<NodeType, DistanceType> GetNearest(NodeType u, std::vector<NodeType> v) const
@@ -63,6 +65,7 @@ class AdjacencyList
 
     private:
         std::size_t sz;
+        std::size_t edgeCount;
         Matrix mat;
 };
 
