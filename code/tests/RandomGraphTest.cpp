@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
             avgTime += dur.count();
         }
     }
-    std::cout << "Average bruteforce query time: " << avgTime / (N * N) << " ms." << std::endl;
+    std::cout << "Average bruteforce query time: " <<avgTime <<","<<  avgTime / (N * N) << " ms." << std::endl;
 
     // std::cout << "Generated. Testing..." << std::endl;
     start = Clock::now();
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
             avgTime += dur.count();
         }
     }
-    std::cout << "Average oracle query time: " << avgTime / (N * N) << " ms." << std::endl;
+    std::cout << "Average oracle query time: " <<avgTime<<","<<  avgTime / (N * N) << " ms." << std::endl;
     std::cout << "Average oracle query+preprocessing time: " << (avgTime+totTime) / (N * N) << " ms." << std::endl;
 
     return 0;

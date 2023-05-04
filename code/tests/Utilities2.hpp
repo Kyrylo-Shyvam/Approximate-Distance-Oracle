@@ -6,6 +6,7 @@
 #include <limits>
 #include <random>
 #include <algorithm>
+#include <vector>
 
 #include "AdjacencyList2.hpp"
 #include "UFDS.hpp"
@@ -77,4 +78,33 @@ inline AdjacencyList<int, float> GenGraph(int seed, int MN, int MX, int MM, int 
     return adjList;
 }
 
+inline void  FW(AdjacencyList<int, float> adjList)
+{
+	int sizeMatrix = adjList.GetSize();
+	int edgesMatrix = adjList.GetEdgeCount();
+	auto matrix  = adjList.GetMatrix();
+
+	std::vector<std::vector<double>> dp(sizeMatrix,
+			std::vector<double>(sizeMatrix,-1));
+	int vertexNo = 0;
+	for(auto edge : matrix)
+	{
+
+		for(auto v : edge) 
+		{
+			dp[v.first][vertexNo] = v.second;
+			dp[vertexNo][v.first] = v.second;
+		}
+		vertexNo++;
+	}
+	for (int k = 0; k < sizeMatrix; ++k) {
+		for (int i = 0; i < sizeMatrix; ++i) {
+			for (int j = 0; j < sizeMatrix; ++j) {
+				dp[i][j] = fmin(dp[i][j], dp[i][k] + dp[k][j]);
+			}
+		}
+	}
+	//std::cout << "FW" << sizeMatrix;
+
+}
 #endif

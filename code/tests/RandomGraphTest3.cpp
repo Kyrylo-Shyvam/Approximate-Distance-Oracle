@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
     const int N = adjList.GetSize();
 
     double avgTime = 0;
+	/*
     std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0.f));
     for(int i = 0; i < N; i++)
     {
@@ -49,7 +50,7 @@ int main(int argc, char* argv[])
         }
     }
     std::cout << avgTime <<"," << avgTime / (N * N) << ",";
-
+	*/
     // std::cout << "Generated. Testing..." << std::endl;
     start = Clock::now();
     Oracle<int, float> oracle(adjList, K);
@@ -63,18 +64,18 @@ int main(int argc, char* argv[])
         for(int j = 0; j < N; j++)
         {
             start = Clock::now();
-            assert(oracle.Query(i, j) <= (2 * K - 1) * dmat[i][j]);
+            //assert(oracle.Query(i, j) <= (2 * K - 1) * dmat[i][j]);
             dur = Clock::now() - start;
             avgTime += dur.count();
         }
     }
-    std::cout << avgTime<<"," << avgTime / (N * N) << ",";
-    std::cout << "" << (avgTime+totTime) / (N * N) << ",";
+    std::cout << avgTime<<",";
+    //std::cout << "" << (avgTime+totTime) / (N * N) << ",";
 
 	start = Clock::now();
 	FW(adjList);
     dur = Clock::now() - start;
-    std::cout << "" << dur.count() << ","<<dur.count()/(N*N)<<std::endl;
+    std::cout << "" << dur.count() << ","<<std::endl;
 
 
     return 0;

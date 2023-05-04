@@ -14,7 +14,7 @@ class AdjacencyList2
         using Edges = std::vector<std::pair<NodeType, DistanceType>>;
         using Matrix = std::vector<Edges>;
 
-        AdjacencyList2(std::size_t v) : sz(v), edgeCount(0) { std::cout <<"Its2";mat.assign(v, std::vector<std::pair<NodeType, DistanceType>>()); }
+        AdjacencyList2(std::size_t v) : sz(v), edgeCount(0) { mat.assign(v, std::vector<std::pair<NodeType, DistanceType>>()); }
 
         void AddUndirectedEdge(NodeType u, NodeType v, DistanceType d)
         {
@@ -36,8 +36,8 @@ class AdjacencyList2
             std::vector<DistanceType> dist(sz, std::numeric_limits<DistanceType>::max());
             dist[u] = 0;
 
-           // std::priority_queue<std::pair<DistanceType, NodeType>, std::vector<std::pair<DistanceType, NodeType>>, std::greater<std::pair<DistanceType, NodeType>>> q;
-			FibQueue<std::pair<DistanceType, NodeType>,std::greater<std::pair<DistanceType, NodeType>>> q;
+            std::priority_queue<std::pair<DistanceType, NodeType>, std::vector<std::pair<DistanceType, NodeType>>, std::greater<std::pair<DistanceType, NodeType>>> q;
+		//	FibQueue<std::pair<DistanceType, NodeType>,std::greater<std::pair<DistanceType, NodeType>>> q;
 
 
             q.push({0, u});
