@@ -1,7 +1,7 @@
 #include "../src/Oracle.hpp"
-#include "AdjacencyList.hpp"
+#include "AdjacencyList2.hpp"
 #include "UFDS.hpp"
-#include "Utilities.hpp"
+#include "Utilities2.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -31,7 +31,8 @@ int main(int argc, char* argv[])
     auto adjList = GenGraph(seed, MN, MX, MM, MND, MXD);
     std::chrono::duration<double, std::milli> dur = Clock::now() - start;
 
-    std::cout << "Graph of " << adjList.GetSize() << " vertices and " << adjList.GetEdgeCount() << " edges. Generated in: " << dur.count() << " ms." << std::endl;
+    std::cout << "" << adjList.GetSize() << "," << adjList.GetEdgeCount() << "," << dur.count() << ",";
+
 
     const int N = adjList.GetSize();
 
@@ -47,13 +48,13 @@ int main(int argc, char* argv[])
             avgTime += dur.count();
         }
     }
-    std::cout << "Average bruteforce query time: " << avgTime / (N * N) << " ms." << std::endl;
+    std::cout << "" << avgTime / (N * N) << ",";
 
     // std::cout << "Generated. Testing..." << std::endl;
     start = Clock::now();
     Oracle<int, float> oracle(adjList, K);
     dur = Clock::now() - start;
-    std::cout << "Oracle generated in: " << dur.count() << " ms." << std::endl;
+    std::cout << "" << dur.count() << ",";
 
     avgTime = 0;
 	double totTime = dur.count();
@@ -67,8 +68,8 @@ int main(int argc, char* argv[])
             avgTime += dur.count();
         }
     }
-    std::cout << "Average oracle query time: " << avgTime / (N * N) << " ms." << std::endl;
-    std::cout << "Average oracle query+preprocessing time: " << (avgTime+totTime) / (N * N) << " ms." << std::endl;
+    std::cout << "" << avgTime / (N * N) << ",";
+    std::cout << "" << (avgTime+totTime) / (N * N) << "" << std::endl;
 
     return 0;
 }
