@@ -1,6 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include "boost/heap/fibonacci_heap.hpp"
+
 #include <limits>
 #include <vector>
 #include <queue>
@@ -58,9 +60,56 @@ class AdjacencyList
             return {-1, 0.f};
         }
 
+        std::pair<NodeType, DistanceType> GetNearestFib(NodeType u, std::vector<NodeType> v) const
+        {
+            std::unordered_set<NodeType> vs(v.begin(), v.end());
+
+            std::vector<DistanceType> dist(sz, std::numeric_limits<DistanceType>::max());
+            dist[u] = 0;
+
+            using Heap = boost::heap::fibonacci_heap<std::pair<DistanceType, NodeType>, 
+                  boost::heap::compare<std::greater<std::pair<DistanceType, NodeType>>>>;
+
+            // std::vector<bool> has_handle(sz, false);
+            std::vector<typename Heap::handle_type> handles(sz);
+
+            Heap q;
+            handles[u] = q.emplace(0, u);
+
+            for(NodeType i = 0; i < sz; i++)
+            {
+                if(i == u) continue;
+                handles[i] = q.emplace(std::numeric_limits<DistanceType>::max(), i);
+            }
+
+            while(!q.empty())
+            {
+                auto [d, a] = q.top();
+                q.pop();
+
+                if(vs.count(a)) return {a, d};
+
+                for(auto [b, d1]: mat[a])
+                {
+                    if(d1 + d < dist[b])
+                    {
+                        dist[b] = d1 + d;
+                        *handles[b] = { d1 + d, b };
+                        q.decrease(handles[b]);
+                    }
+                }
+            }
+            return {-1, 0.f};
+        }
+
         DistanceType GetDistance(NodeType u, NodeType v) const
         {
             return GetNearest(u, {v}).second;
+        }
+
+        DistanceType GetDistanceFib(NodeType u, NodeType v) const
+        {
+            return GetNearestFib(u, {v}).second;
         }
 
     private:

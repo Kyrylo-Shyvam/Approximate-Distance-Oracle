@@ -49,6 +49,20 @@ int main(int argc, char* argv[])
     }
     std::cout << "Average bruteforce query time: " <<avgTime <<","<<  avgTime / (N * N) << " ms." << std::endl;
 
+    avgTime = 0.00;
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            start = Clock::now();
+            float d = adjList.GetDistanceFib(i, j);
+            dur = Clock::now() - start;
+            assert(dmat[i][j] == d);
+            avgTime += dur.count();
+        }
+    }
+    std::cout << "Average fib heap query time: " << avgTime / (N * N) << " ms." << std::endl;
+
     // std::cout << "Generated. Testing..." << std::endl;
     start = Clock::now();
     Oracle<int, float> oracle(adjList, K);
