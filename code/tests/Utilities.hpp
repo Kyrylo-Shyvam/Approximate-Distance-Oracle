@@ -130,13 +130,13 @@ inline AdjacencyList<int, float> GenGraph(int seed, int MN, int MX, int MM, int 
     return adjList;
 }
 
-inline std::vector<std::vector<double>> FW(AdjacencyList<int, float> adjList)
+inline std::vector<std::vector<float>> FW(AdjacencyList<int, float> adjList)
 {
 	int sizeMatrix = adjList.GetSize();
 	int edgesMatrix = adjList.GetEdgeCount();
 	auto matrix  = adjList.GetMatrix();
 
-	std::vector<std::vector<double>> dp(sizeMatrix, std::vector<double>(sizeMatrix, 10000000));
+	std::vector<std::vector<float>> dp(sizeMatrix, std::vector<float>(sizeMatrix, 10000000));
 
 	int vertexNo = 0;
 	for(auto edge : matrix)

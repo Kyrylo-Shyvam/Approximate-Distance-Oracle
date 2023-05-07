@@ -16,7 +16,7 @@
 
 using Clock = std::chrono::high_resolution_clock;
 
-double DoDjikstraFor(int s, int e, int n, AdjacencyList<int, float> adj, double& res)
+std::vector<std::vector<float>> DoDjikstraFor(int s, int e, int n, AdjacencyList<int, float> adj, double& res)
 {
     int N = n;
 
@@ -32,7 +32,7 @@ double DoDjikstraFor(int s, int e, int n, AdjacencyList<int, float> adj, double&
     auto end = Clock::now();
 
     res = std::chrono::duration<double, std::milli>(end - start).count();
-    return res;
+    return dmat;
 }
 
 int main(int argc, char* argv[])
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     double avgTime = std::accumulate(threadTime.begin(), threadTime.end(), 0.00) / threads.size();
     std::cout << avgTime << ",";
 
-    std::vector<std::vector<double>> dmat(N, std::vector<double>(N, 0));
+    std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0));
 
     start = Clock::now();
     Oracle<int, float> oracle(adjList, K);
