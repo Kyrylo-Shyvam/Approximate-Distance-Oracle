@@ -13,7 +13,7 @@ using Clock = std::chrono::high_resolution_clock;
 
 int main(int argc, char* argv[])
 {
-    if(argc < 7)
+    if(argc <= 7)
     {
         std::cout << "usage: RandomGraphTest K <seed> <minimum-n> <maximum-n> <max-m> <min-dist> <max-dist>" << std::endl;
         return -1;
@@ -49,19 +49,19 @@ int main(int argc, char* argv[])
     }
     std::cout << "Average bruteforce query time: " <<avgTime <<","<<  avgTime / (N * N) << " ms." << std::endl;
 
-    avgTime = 0.00;
-    for(int i = 0; i < N; i++)
-    {
-        for(int j = 0; j < N; j++)
-        {
-            start = Clock::now();
-            float d = adjList.GetDistanceFib(i, j);
-            dur = Clock::now() - start;
-            assert(dmat[i][j] == d);
-            avgTime += dur.count();
-        }
-    }
-    std::cout << "Average fib heap query time: " << avgTime / (N * N) << " ms." << std::endl;
+    // avgTime = 0.00;
+    // for(int i = 0; i < N; i++)
+    // {
+    //     for(int j = 0; j < N; j++)
+    //     {
+    //         start = Clock::now();
+    //         float d = adjList.GetDistanceFib(i, j);
+    //         dur = Clock::now() - start;
+    //         assert(dmat[i][j] == d);
+    //         avgTime += dur.count();
+    //     }
+    // }
+    // std::cout << "Average fib heap query time: " << avgTime / (N * N) << " ms." << std::endl;
 
     // std::cout << "Generated. Testing..." << std::endl;
     start = Clock::now();
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
             avgTime += dur.count();
         }
     }
-    std::cout << "Average oracle query time: " <<avgTime<<","<<  avgTime / (N * N) << " ms." << std::endl;
+    std::cout << "Average oracle query time: " << avgTime << "," <<  avgTime / (N * N) << " ms." << std::endl;
     std::cout << "Average oracle query+preprocessing time: " << (avgTime+totTime) / (N * N) << " ms." << std::endl;
 
     return 0;

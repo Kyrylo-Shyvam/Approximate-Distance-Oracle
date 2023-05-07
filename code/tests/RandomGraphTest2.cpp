@@ -1,7 +1,7 @@
 #include "../src/Oracle.hpp"
-#include "AdjacencyList2.hpp"
+#include "AdjacencyList.hpp"
 #include "UFDS.hpp"
-#include "Utilities2.hpp"
+#include "Utilities.hpp"
 
 #include <cassert>
 #include <iostream>

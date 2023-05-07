@@ -146,7 +146,8 @@ class Oracle
 
                 for(auto [b, d1]: graph.GetAllEdges(a))
                 {
-                    if(d1 + d < dist[b])
+                    // if(d1 + d < dist[b])
+                    if(d1 + d < dist[b] || (d1 + d == dist[b] && res[b].first > res[a].first))
                     {
                         dist[b] = d1 + d;
                         q.push({d1 + d, b});

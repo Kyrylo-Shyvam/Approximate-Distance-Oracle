@@ -1,5 +1,7 @@
-#ifndef ORACLE_H
-#define ORACLE_H
+#ifndef ORACLE_FIB_H
+#define ORACLE_FIB_H
+
+#include "boost/heap/fibonacci_heap.hpp"
 
 #include <functional>
 #include <iostream>
@@ -10,16 +12,16 @@
 #include <unordered_map>
 #include <assert.h>
 
-#include "AdjacencyList2.hpp"
+#include "AdjacencyList.hpp"
 
 template<typename NodeType, typename DistanceType>
-class Oracle2
+class OracleFib
 {
-    using AdjList = AdjacencyList2<NodeType, DistanceType>;
+    using AdjList = AdjacencyList<NodeType, DistanceType>;
 
     public:
         // WARN: only works for connected graphs
-        Oracle2(AdjList lst, int K) : graph(lst), K(K)
+        OracleFib(AdjList lst, int K) : graph(lst), K(K)
         {
             A.assign(K + 1, std::vector<NodeType>());
 
@@ -126,14 +128,26 @@ class Oracle2
         {
             std::vector<DistanceType> dist(graph.GetSize(), std::numeric_limits<DistanceType>::max());
 
-            std::priority_queue<std::pair<DistanceType, NodeType>, std::vector<std::pair<DistanceType, NodeType>>, std::greater<std::pair<DistanceType, NodeType>>> q;
+            using Heap = boost::heap::fibonacci_heap<std::pair<DistanceType, NodeType>, 
+                  boost::heap::compare<std::greater<std::pair<DistanceType, NodeType>>>>;
+
+            std::vector<typename Heap::handle_type> handles(graph.GetSize());
+            Heap q;
 
             std::vector<std::pair<NodeType, DistanceType>> res(graph.GetSize(), {-1, std::numeric_limits<DistanceType>::max()});
+
+            for(std::size_t j = 0; j < graph.GetSize(); j++)
+            {
+                handles[j] = q.emplace(std::numeric_limits<DistanceType>::max(), j);
+            }
 
             for(NodeType x: A[i])
             {
                 dist[x] = 0;
-                q.push({0, x});
+                
+                *handles[x] = { 0, x };
+                q.decrease(handles[x]);
+
                 res[x] = {x, 0};
             }
 
@@ -142,14 +156,16 @@ class Oracle2
                 auto [d, a] = q.top();
                 q.pop();
 
-                if(dist[a] < d) continue;
+                // if(dist[a] < d) continue;
 
                 for(auto [b, d1]: graph.GetAllEdges(a))
                 {
-                    if(d1 + d < dist[b])
+                    if(d1 + d < dist[b] || (d1 + d == dist[b] && res[b].first > res[a].first))
                     {
                         dist[b] = d1 + d;
-                        q.push({d1 + d, b});
+
+                        *handles[b] = { d1 + d, b };
+                        q.decrease(handles[b]);
 
                         res[b] = { res[a].first, d1 + d };
                     }
@@ -163,9 +179,19 @@ class Oracle2
             std::vector<DistanceType> dist(graph.GetSize(), std::numeric_limits<DistanceType>::max());
             dist[w] = 0;
 
-            std::priority_queue<std::pair<DistanceType, NodeType>, std::vector<std::pair<DistanceType, NodeType>>, std::greater<std::pair<DistanceType, NodeType>>> q;
+            using Heap = boost::heap::fibonacci_heap<std::pair<DistanceType, NodeType>, 
+                  boost::heap::compare<std::greater<std::pair<DistanceType, NodeType>>>>;
 
-            q.push({0, w});
+            std::vector<typename Heap::handle_type> handles(graph.GetSize());
+
+            Heap q;
+            handles[w] = q.emplace(0, w);
+
+            for(NodeType i = 0; i < graph.GetSize(); i++)
+            {
+                if(i == w) continue;
+                handles[i] = q.emplace(std::numeric_limits<DistanceType>::max(), i);
+            }
 
             std::unordered_map<NodeType, DistanceType> res;
             while(!q.empty())
@@ -173,7 +199,7 @@ class Oracle2
                 auto [d, a] = q.top();
                 q.pop();
 
-                if(dist[a] < d) continue;
+                // if(dist[a] < d) continue;
 
                 res[a] = d;
                 for(auto [b, d1]: graph.GetAllEdges(a))
@@ -181,7 +207,8 @@ class Oracle2
                     if(d1 + d < dist[b] && d1 + d < P[pi + 1][b].second)
                     {
                         dist[b] = d1 + d;
-                        q.push({d1 + d, b});
+                        *handles[b] = { d1 + d, b };
+                        q.decrease(handles[b]);
                     }
                 }
             }
