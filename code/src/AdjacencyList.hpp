@@ -42,14 +42,16 @@ class AdjacencyList
 
             while(!q.empty())
             {
-                auto [d, a] = q.top();
+				auto temp = q.top();
+				auto d = temp.first;auto a =temp.second;
                 q.pop();
 
                 if(dist[a] < d) continue;
                 if(vs.count(a)) return {a, d};
 
-                for(auto [b, d1]: mat[a])
+ 				for(auto temp1: mat[a])
                 {
+					auto b = temp1.first;auto d1 =temp1.second;
                     if(d1 + d < dist[b])
                     {
                         dist[b] = d1 + d;
@@ -84,13 +86,15 @@ class AdjacencyList
 
             while(!q.empty())
             {
-                auto [d, a] = q.top();
+ 				auto temp = q.top();
+				auto d = temp.first;auto a =temp.second;
                 q.pop();
 
                 if(vs.count(a)) return {a, d};
 
-                for(auto [b, d1]: mat[a])
+ 				for(auto temp1: mat[a])
                 {
+					auto b = temp1.first;auto d1 =temp1.second;
                     if(d1 + d < dist[b])
                     {
                         dist[b] = d1 + d;

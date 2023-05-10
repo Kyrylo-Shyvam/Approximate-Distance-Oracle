@@ -82,7 +82,8 @@ class OracleFib
                 for(NodeType x = 0; x < graph.GetSize(); x++)
                 {
                     // Find nearest to x in A[i]
-                    auto [piv, div] = T[x];
+  					auto temp = T[x];
+					auto piv = temp.first; auto div = temp.second;
                     if(div == P[i + 1][x].second) piv = P[i + 1][x].first;
 
 #ifdef PRINT_EXTRA
@@ -110,8 +111,9 @@ class OracleFib
 #ifdef PRINT_EXTRA
                 std::cout << w << ":";
 #endif
-                for(auto [v, d]: C[w])
+                for(auto temp1: C[w])
                 {
+					auto v = temp1.first;auto d = temp1.second;
 #ifdef PRINT_EXTRA
                     std::cout << " {" << v << ":" << d << "}";
 #endif
@@ -153,13 +155,15 @@ class OracleFib
 
             while(!q.empty())
             {
-                auto [d, a] = q.top();
+				auto temp = q.top();
+				auto d = temp.first;auto a = temp.second;
                 q.pop();
 
                 // if(dist[a] < d) continue;
 
-                for(auto [b, d1]: graph.GetAllEdges(a))
+ 				for(auto temp1: graph.GetAllEdges(a))
                 {
+					auto b = temp1.first;auto d1 = temp1.second;
                     if(d1 + d < dist[b] || (d1 + d == dist[b] && res[b].first > res[a].first))
                     {
                         dist[b] = d1 + d;
@@ -196,14 +200,16 @@ class OracleFib
             std::unordered_map<NodeType, DistanceType> res;
             while(!q.empty())
             {
-                auto [d, a] = q.top();
+				auto temp = q.top();
+				auto d = temp.first;auto a = temp.second;
                 q.pop();
 
                 // if(dist[a] < d) continue;
 
                 res[a] = d;
-                for(auto [b, d1]: graph.GetAllEdges(a))
+ 				for(auto temp1: graph.GetAllEdges(a))
                 {
+					auto b = temp1.first;auto d1 = temp1.second;
                     if(d1 + d < dist[b] && d1 + d < P[pi + 1][b].second)
                     {
                         dist[b] = d1 + d;

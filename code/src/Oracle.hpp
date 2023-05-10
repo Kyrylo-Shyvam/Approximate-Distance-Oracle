@@ -64,7 +64,8 @@ class Oracle
                 for(NodeType x = 0; x < graph.GetSize(); x++)
                 {
                     // Find nearest to x in A[i]
-                    auto [piv, div] = T[x];
+  					auto temp = T[x];
+					auto piv = temp.first; auto div = temp.second;
                     if(div == P[i + 1][x].second) piv = P[i + 1][x].first;
 
                     P[i][x] = {piv, div};
@@ -82,8 +83,9 @@ class Oracle
 
             for(NodeType w = 0; w < graph.GetSize(); w++)
             {
-                for(auto [v, d]: C[w])
+                for(auto temp: C[w])
                 {
+					auto v=temp.first;auto d=temp.second;
                     B[v][w] = d;
                 }
             }
@@ -107,13 +109,15 @@ class Oracle
 
             while(!q.empty())
             {
-                auto [d, a] = q.top();
+				auto temp = q.top();
+				auto d = temp.first;auto a = temp.second;
                 q.pop();
 
                 if(dist[a] < d) continue;
 
-                for(auto [b, d1]: graph.GetAllEdges(a))
+ 				for(auto temp1: graph.GetAllEdges(a))
                 {
+					auto b = temp1.first;auto d1 = temp1.second;
                     // if(d1 + d < dist[b])
                     if(d1 + d < dist[b] || (d1 + d == dist[b] && res[b].first > res[a].first))
                     {
@@ -139,14 +143,17 @@ class Oracle
             std::unordered_map<NodeType, DistanceType> res;
             while(!q.empty())
             {
-                auto [d, a] = q.top();
+
+				auto temp = q.top();
+				auto d = temp.first;auto a = temp.second;
                 q.pop();
 
                 if(dist[a] < d) continue;
 
                 res[a] = d;
-                for(auto [b, d1]: graph.GetAllEdges(a))
+ 				for(auto temp1: graph.GetAllEdges(a))
                 {
+					auto b = temp1.first;auto d1 = temp1.second;
                     if(d1 + d < dist[b] && d1 + d < P[pi + 1][b].second)
                     {
                         dist[b] = d1 + d;

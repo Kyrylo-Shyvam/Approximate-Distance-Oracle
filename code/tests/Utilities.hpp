@@ -17,7 +17,7 @@ inline bool IsConnected(AdjacencyList<int, float> graph)
 
     for(int i = 0; i < n; i++)
     {
-        for(auto [x, d]: graph.GetAllEdges(i)) uf.Union(i, x);
+        for(auto temp: graph.GetAllEdges(i)) uf.Union(i, temp.first);
     }
     return uf.Components().size() == 1;
 }
@@ -67,7 +67,8 @@ inline AdjacencyList<int, float> GenGraph(int seed, int N, int M, int MND, int M
     {
         int j = rnd(gen) % notdone.size();
 
-        auto [x, y] = notdone[j];
+        auto temp = notdone[j];
+		auto x=temp.first;auto y = temp.second;
 
         adjList.AddUndirectedEdge(x, y, drnd(gen));
         notdone.erase(notdone.begin() + j);
@@ -122,7 +123,8 @@ inline AdjacencyList<int, float> GenGraph(int seed, int MN, int MX, int MM, int 
     {
         int j = rnd(gen) % notdone.size();
 
-        auto [x, y] = notdone[j];
+        auto temp = notdone[j];
+		auto x=temp.first;auto y = temp.second;
 
         adjList.AddUndirectedEdge(x, y, drnd(gen));
         notdone.erase(notdone.begin() + j);
