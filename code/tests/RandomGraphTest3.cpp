@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     std::chrono::duration<double, std::milli> dur = Clock::now() - start;
 
     std::cout << adjList.GetSize() << "," << adjList.GetEdgeCount() << "," << dur.count() << ",";
-
+/*
     unsigned int threadCount = std::thread::hardware_concurrency();
     if(threadCount == 0) threadCount = 2;
 
@@ -78,7 +78,8 @@ int main(int argc, char* argv[])
 
     double avgTime = std::accumulate(threadTime.begin(), threadTime.end(), 0.00) / threads.size();
     std::cout << avgTime << ",";
-
+*/
+	double avgTime = 0;
     std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0));
 
     start = Clock::now();
