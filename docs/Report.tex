@@ -37,12 +37,14 @@
 
 \counterwithin{figure}{section}
 
-\makeatletter
-\def\@seccntformat#1{
-  \expandafter\ifx\csname c@#1\endcsname\c@section\else
-  \csname the#1\endcsname\quad
-  \fi}
-\makeatother
+% \makeatletter
+% \def\@seccntformat#1{
+%   \expandafter\ifx\csname c@#1\endcsname\c@section\else
+%   \csname the#1\endcsname\quad
+%   \fi}
+% \makeatother
+
+\addbibresource{citation.bib}
 
 \renewcommand\qedsymbol{QED}
 \renewcommand{\familydefault}{\sfdefault}
@@ -52,6 +54,8 @@
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}{Lemma}[section]
+
+\newcommand{\code}[1]{\mintinline{cpp}|#1|}
 
 \begin{document}
     \begin{minipage}[]{\textwidth}
@@ -63,4 +67,39 @@
         }
         \setstretch{1.0}
     \end{minipage}
+
+    \section{Introduction}
+    
+    The paper\cite{paper} presents a data structure and relevant algorithms for fast t-distance queries. We implemented the algorithms for connected undirected weighted graphs represented using Adjacency List.
+
+    \section{Data Structure}
+
+    The data structure presented is called \emph{Oracle}. It requires a pre-process step. The pre-process step does most of the work, therefore queries are really fast.
+
+    The data structures takes as input a connected undirected weighted graph $G$ and an integer $K$.
+
+    \subsection{Pre process Algorithm}
+
+    According to the paper this step takes time $O(kmn^{\frac{1}{k}})$. The actual time complexity depends on the shortest path algorithm used. In our case we went with djikstra, therefore we have a slightly worse time complexity.
+
+    The algorithm selects vertices randomly with a probability of $\frac{1}{k}$. We used \code{std::bernoulli_distribution} for this. We used STL data structures like \code{std::vector}, \code{std::priority_queue} and \code{std::unordered_map} heavily. We also use \code{boost::heap::fibonacci_heap} for implementation using Fibonacci Heap.
+
+    \subsection{Query Algorithm}
+
+    This is a simple algorithm. It takes two vertices as input and returns the k-spanner distance between them.
+
+    \section{Performance}
+
+    We have two implementations of the algorithm (one using \code{std::priority_queue} and other using \\
+    \code{boost::heap::fibonacci_heap}), we compare them against Floyd-Warshall and Djikstras algorithm.
+
+    \subsection{Random Graphs}
+
+    We generate random connected graphs of different vertices and edges, and we obtained the following performance graph:
+
+    \subsection{Real World Graphs}
+
+    We used real world graphs from the \textbf{Graph} directory on the server, and we obtained the following performance graph:
+
+    \printbibliography
 \end{document}

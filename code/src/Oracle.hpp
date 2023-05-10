@@ -56,25 +56,9 @@ class Oracle
                 } while(A[i].size() == 0); // HACK: is this correct? we dont want to get an empty list before A[K] but can this end up in infinite loop
             }
 
-#ifdef PRINT_EXTRA
-            for(int i = 0; i <= K; i++)
-            {
-                std::cout << "A[" << i << "]:";
-                for(NodeType x: A[i])
-                {
-                    std::cout << " " << x;
-                }
-                std::cout << std::endl;
-            }
-#endif
-
             std::vector<std::unordered_map<NodeType, DistanceType>> C(graph.GetSize());
             for(int i = K - 1; i >= 0; i--)
             {
-#ifdef PRINT_EXTRA
-                std::cout << i << ":";
-#endif
-
                 std::vector<std::pair<NodeType, DistanceType>> T = SSSPTree(i);
 
                 for(NodeType x = 0; x < graph.GetSize(); x++)
@@ -83,15 +67,8 @@ class Oracle
                     auto [piv, div] = T[x];
                     if(div == P[i + 1][x].second) piv = P[i + 1][x].first;
 
-#ifdef PRINT_EXTRA
-                    std::cout << " {" << x << ": " << piv << ", " << div << "}";
-#endif
-
                     P[i][x] = {piv, div};
                 }
-#ifdef PRINT_EXTRA
-                std::cout << std::endl;
-#endif
 
                 for(NodeType x: A[i])
                 {
@@ -105,19 +82,10 @@ class Oracle
 
             for(NodeType w = 0; w < graph.GetSize(); w++)
             {
-#ifdef PRINT_EXTRA
-                std::cout << w << ":";
-#endif
                 for(auto [v, d]: C[w])
                 {
-#ifdef PRINT_EXTRA
-                    std::cout << " {" << v << ":" << d << "}";
-#endif
                     B[v][w] = d;
                 }
-#ifdef PRINT_EXTRA
-                std::cout << std::endl;
-#endif
             }
         }
 
