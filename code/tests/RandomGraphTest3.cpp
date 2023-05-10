@@ -15,7 +15,7 @@
 #include <iomanip>
 
 using Clock = std::chrono::high_resolution_clock;
-
+/*
 std::vector<std::vector<float>> DoDjikstraFor(int s, int e, int n, AdjacencyList<int, float> adj, double& res)
 {
     int N = n;
@@ -34,7 +34,7 @@ std::vector<std::vector<float>> DoDjikstraFor(int s, int e, int n, AdjacencyList
     res = std::chrono::duration<double, std::milli>(end - start).count();
     return dmat;
 }
-
+*/
 int main(int argc, char* argv[])
 {
     if(argc < 7)

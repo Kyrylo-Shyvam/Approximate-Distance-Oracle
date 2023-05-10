@@ -38,16 +38,15 @@ int main(int argc, char* argv[])
 
     double avgTime = 0;
     std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0.f));
-    for(int i = 0; i < N; i++)
-    {
-        for(int j = 0; j < N; j++)
-        {
-            start = Clock::now();
-            dmat[i][j] = adjList.GetDistance(i, j);
-            dur = Clock::now() - start;
-            avgTime += dur.count();
-        }
-    }
+	for(int j = 0; j < N; j++)
+	{
+		start = Clock::now();
+		dmat[j] = adjList.GetDistance(j);
+		dur = Clock::now() - start;
+		avgTime += dur.count();
+		if(j%1000 == 0)
+			std::cout << j<<std::endl;
+	}
     std::cout << avgTime <<",";// << avgTime / (N * N) << ",";
 
     // std::cout << "Generated. Testing..." << std::endl;
@@ -70,13 +69,13 @@ int main(int argc, char* argv[])
     }
     std::cout << avgTime<<"," ;//<< avgTime / (N * N) << ",";
     std::cout << "" << (avgTime+totTime) / (N * N) << ",";
-
+/*
 	start = Clock::now();
 	auto dp = FW(adjList);
     dur = Clock::now() - start;
     std::cout << "" << dur.count() ;//<< ","<<dur.count()/(N*N)<<std::endl;
 
-
+*/
     return 0;
 }
 

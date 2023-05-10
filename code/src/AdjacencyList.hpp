@@ -30,9 +30,9 @@ class AdjacencyList
         std::size_t GetEdgeCount() const { return edgeCount; }
 
         // Use some shortest path algorithm
-        std::pair<NodeType, DistanceType> GetNearest(NodeType u, std::vector<NodeType> v) const
+        std::vector<DistanceType> GetNearest(NodeType u) const
         {
-            std::unordered_set<NodeType> vs(v.begin(), v.end());
+            //std::unordered_set<NodeType> vs(v.begin(), v.end());
 
             std::vector<DistanceType> dist(sz, std::numeric_limits<DistanceType>::max());
             dist[u] = 0;
@@ -47,7 +47,6 @@ class AdjacencyList
                 q.pop();
 
                 if(dist[a] < d) continue;
-                if(vs.count(a)) return {a, d};
 
  				for(auto temp1: mat[a])
                 {
@@ -59,7 +58,7 @@ class AdjacencyList
                     }
                 }
             }
-            return {-1, 0.f};
+            return dist;
         }
 
         std::pair<NodeType, DistanceType> GetNearestFib(NodeType u, std::vector<NodeType> v) const
@@ -106,9 +105,9 @@ class AdjacencyList
             return {-1, 0.f};
         }
 
-        DistanceType GetDistance(NodeType u, NodeType v) const
+		std::vector<DistanceType> GetDistance(NodeType u) const
         {
-            return GetNearest(u, {v}).second;
+            return GetNearest(u);
         }
 
         DistanceType GetDistanceFib(NodeType u, NodeType v) const

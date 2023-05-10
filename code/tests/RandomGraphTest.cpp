@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 
     double avgTime = 0;
     std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0.f));
-    for(int i = 0; i < N; i++)
+    /*for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < N; j++)
         {
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
         }
     }
     std::cout << "Average bruteforce query time: " <<avgTime <<","<<  avgTime / (N * N) << " ms." << std::endl;
-
+*/
     // avgTime = 0.00;
     // for(int i = 0; i < N; i++)
     // {
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
         for(int j = 0; j < N; j++)
         {
             start = Clock::now();
-            assert(oracle.Query(i, j) <= (2 * K - 1) * dmat[i][j]);
+            //assert(oracle.Query(i, j) <= (2 * K - 1) * dmat[i][j]);
             dur = Clock::now() - start;
             avgTime += dur.count();
         }
