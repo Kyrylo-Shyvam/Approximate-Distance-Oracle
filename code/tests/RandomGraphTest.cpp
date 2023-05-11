@@ -1,4 +1,5 @@
 #include "../src/Oracle.hpp"
+#include "../src/OracleFib.hpp"
 #include "AdjacencyList.hpp"
 #include "UFDS.hpp"
 #include "Utilities.hpp"
@@ -10,6 +11,71 @@
 #include <chrono>
 
 using Clock = std::chrono::high_resolution_clock;
+
+std::vector<std::vector<float>> RunOracle(AdjacencyList<int, float> adjList, int K)
+{
+    int N = adjList.GetSize();
+
+    auto start = Clock::now();
+    Oracle<int, float> oracle(adjList, K);
+    auto dur = Clock::now() - start;
+    std::cout << "Oracle generated in: " << dur.count() << " ms." << std::endl;
+
+    std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0.f));
+    start = Clock::now();
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            float c = oracle.Query(i, j);
+            // assert(c <= (2 * K - 1) * dmat[i][j]);
+            dmat[i][j] = c;
+        }
+    }
+    dur = Clock::now() - start;
+    std::cout << "Average oracle query time: " << "," <<  dur.count()/ (N * N) << " ms." << std::endl;
+    return dmat;
+}
+
+std::vector<std::vector<float>> RunOracleFib(AdjacencyList<int, float> adjList, int K)
+{
+    int N = adjList.GetSize();
+
+    auto start = Clock::now();
+    OracleFib<int, float> oracle(adjList, K);
+    auto dur = Clock::now() - start;
+    std::cout << "Oracle generated in: " << dur.count() << " ms." << std::endl;
+
+    std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0.f));
+    start = Clock::now();
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            float c = oracle.Query(i, j);
+            // assert(c <= (2 * K - 1) * dmat[i][j]);
+            dmat[i][j] = c;
+        }
+    }
+    dur = Clock::now() - start;
+    std::cout << "Average oracle query time: " << "," <<  dur.count()/ (N * N) << " ms." << std::endl;
+    return dmat;
+}
+
+std::vector<std::vector<float>> RunDjikstra(AdjacencyList<int, float> adjList, int K)
+{
+    int N = adjList.GetSize();
+
+    std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0.f));
+    auto start = Clock::now();
+    for(int i = 0; i < N; i++)
+    {
+        dmat[i] = adjList.GetDistance(i);
+    }
+    auto dur = Clock::now() - start;
+    std::cout << "Average bruteforce query time: " <<  dur.count() / (N * N) << " ms." << std::endl;
+    return dmat;
+}
 
 int main(int argc, char* argv[])
 {
@@ -28,61 +94,57 @@ int main(int argc, char* argv[])
     const float MXD = strtof(argv[7], nullptr);
 
     auto start = Clock::now();
-    auto adjList = GenGraph(seed, MN, MX, MM, MND, MXD);
+    auto adjList = GenGraph<double>(seed, MN, MX, MM, MND, MXD);
     std::chrono::duration<double, std::milli> dur = Clock::now() - start;
 
     std::cout << "Graph of " << adjList.GetSize() << " vertices and " << adjList.GetEdgeCount() << " edges. Generated in: " << dur.count() << " ms." << std::endl;
 
     const int N = adjList.GetSize();
 
-    double avgTime = 0;
-    std::vector<std::vector<float>> dmat(N, std::vector<float>(N, 0.f));
-    /*for(int i = 0; i < N; i++)
-    {
-        for(int j = 0; j < N; j++)
-        {
-            start = Clock::now();
-            dmat[i][j] = adjList.GetDistance(i, j);
-            dur = Clock::now() - start;
-            avgTime += dur.count();
-        }
-    }
-    std::cout << "Average bruteforce query time: " <<avgTime <<","<<  avgTime / (N * N) << " ms." << std::endl;
-*/
-    // avgTime = 0.00;
-    // for(int i = 0; i < N; i++)
-    // {
-    //     for(int j = 0; j < N; j++)
-    //     {
-    //         start = Clock::now();
-    //         float d = adjList.GetDistanceFib(i, j);
-    //         dur = Clock::now() - start;
-    //         assert(dmat[i][j] == d);
-    //         avgTime += dur.count();
-    //     }
-    // }
-    // std::cout << "Average fib heap query time: " << avgTime / (N * N) << " ms." << std::endl;
-
-    // std::cout << "Generated. Testing..." << std::endl;
+    std::vector<std::vector<double>> dmat(N, std::vector<double>(N, 0.f));
     start = Clock::now();
-    Oracle<int, float> oracle(adjList, K);
+    for(int i = 0; i < N; i++)
+    {
+        dmat[i] = adjList.GetDistance(i);
+    }
+    dur = Clock::now() - start;
+    std::cout << "Average bruteforce query time: " <<  dur.count() / (N * N) << " ms." << std::endl;
+
+    start = Clock::now();
+    Oracle<int, double> oracle(adjList, K);
     dur = Clock::now() - start;
     std::cout << "Oracle generated in: " << dur.count() << " ms." << std::endl;
 
-    avgTime = 0;
-	double totTime = dur.count();
+    start = Clock::now();
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < N; j++)
         {
-            start = Clock::now();
-            //assert(oracle.Query(i, j) <= (2 * K - 1) * dmat[i][j]);
-            dur = Clock::now() - start;
-            avgTime += dur.count();
+            float c = oracle.Query(i, j);
+            assert(c <= (2 * K - 1) * dmat[i][j]);
+            dmat[i][j] = c;
         }
     }
-    std::cout << "Average oracle query time: " << avgTime << "," <<  avgTime / (N * N) << " ms." << std::endl;
-    std::cout << "Average oracle query+preprocessing time: " << (avgTime+totTime) / (N * N) << " ms." << std::endl;
+    dur = Clock::now() - start;
+    std::cout << "Average oracle query time: " <<  dur.count()/ (N * N) << " ms." << std::endl;
+
+    start = Clock::now();
+    OracleFib<int, double> oracleFib(adjList, K);
+    dur = Clock::now() - start;
+    std::cout << "OracleFib generated in: " << dur.count() << " ms." << std::endl;
+
+    start = Clock::now();
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            float c = oracleFib.Query(i, j);
+            assert(c <= (2 * K - 1) * dmat[i][j]);
+            dmat[i][j] = c;
+        }
+    }
+    dur = Clock::now() - start;
+    std::cout << "AverageFib oracle query time: " <<  dur.count()/ (N * N) << " ms." << std::endl;
 
     return 0;
 }

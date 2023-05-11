@@ -3,9 +3,11 @@
 
 #include <cassert>
 #include <iostream>
+#include <deque>
 #include <limits>
 #include <random>
 #include <algorithm>
+#include <unordered_set>
 
 #include "AdjacencyList.hpp"
 #include "UFDS.hpp"
@@ -76,7 +78,8 @@ inline AdjacencyList<int, float> GenGraph(int seed, int N, int M, int MND, int M
     return adjList;
 }
 
-inline AdjacencyList<int, float> GenGraph(int seed, int MN, int MX, int MM, int MND, int MXD)
+template<typename DistanceType>
+inline AdjacencyList<int, DistanceType> GenGraph(int seed, int MN, int MX, int MM, int MND, int MXD)
 {
     std::mt19937 gen(seed);
     int N = std::uniform_int_distribution<>(MN, MX)(gen);
@@ -84,15 +87,15 @@ inline AdjacencyList<int, float> GenGraph(int seed, int MN, int MX, int MM, int 
     std::uniform_int_distribution<> rnd(0, std::numeric_limits<int>::max());
     std::uniform_real_distribution<> drnd(MND, MXD);
 
-    AdjacencyList<int, float> adjList(N);
+    AdjacencyList<int, DistanceType> adjList(N);
 
     UFDS uf(N);
-    std::vector<std::pair<int, int>> notdone;
+    std::set<std::pair<int, int>> notdone;
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < i; j++)
         {
-            notdone.push_back({j, i});
+            notdone.insert({j, i});
         }
     }
 
@@ -105,29 +108,33 @@ inline AdjacencyList<int, float> GenGraph(int seed, int MN, int MX, int MM, int 
         int y = rnd(gen) % comps.size();
         while(x == y) y = rnd(gen) % comps.size();
 
+        if(x > y) std::swap(x, y);
+
         x = comps[x];
         y = comps[y];
 
         uf.Union(x, y);
         adjList.AddUndirectedEdge(x, y, drnd(gen));
 
-        notdone.erase(std::find(notdone.begin(), 
-                    notdone.end(), 
-                    std::make_pair(std::min(x, y), std::max(x, y))));
+        notdone.erase({x, y});
+        // notdone.erase(std::find(notdone.begin(), 
+        //             notdone.end(), 
+        //             std::make_pair(std::min(x, y), std::max(x, y))));
     }
     assert(IsConnected(adjList));
 
+    std::deque<std::pair<int, int>> nv(notdone.begin(), notdone.end());
 
     int M = rnd(gen) % (std::min(MM, (N * (N - 1)) / 2) - N + 1);
     for(int i = 0; i < M; i++)
     {
-        int j = rnd(gen) % notdone.size();
+        int j = rnd(gen) % nv.size();
 
-        auto temp = notdone[j];
+        auto temp = nv[j];
 		auto x=temp.first;auto y = temp.second;
 
         adjList.AddUndirectedEdge(x, y, drnd(gen));
-        notdone.erase(notdone.begin() + j);
+        nv.erase(nv.begin() + j);
     }
     return adjList;
 }

@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     const float MXD = strtof(argv[7], nullptr);
 
     auto start = Clock::now();
-    auto adjList = GenGraph(seed, MN, MX, MM, MND, MXD);
+    auto adjList = GenGraph<float>(seed, MN, MX, MM, MND, MXD);
     std::chrono::duration<double, std::milli> dur = Clock::now() - start;
 
     std::cout << "" << adjList.GetSize() << "," << adjList.GetEdgeCount() << "," << dur.count() << ",";
